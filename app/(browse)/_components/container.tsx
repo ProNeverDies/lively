@@ -1,35 +1,28 @@
 "use client";
-import { useEffect } from "react";
-import {useMediaQuery} from "usehooks-ts";
+
+import React, { useEffect } from "react";
+import { useMediaQuery } from "usehooks-ts";
+
 import { cn } from "@/lib/utils";
 import { useSidebar } from "@/store/use-sidebar";
-import { channel } from "diagnostics_channel";
-import { stat } from "fs";
 
-interface ContainerProps{
-    children:React.ReactNode;
-};
-export const Container=({children,}:ContainerProps)=>{
-    const {}=useSidebar((state)=>state);
-    const matches=-useMediaQuery("(max-width:1024px)");
-    const{
-        collapsed,
-        onCollapse,
-        onExpand
+export function Container({ children }: { children: React.ReactNode }) {
+  const { collapsed, onCollapse, onExpand } = useSidebar((state) => state);
+  const matches = useMediaQuery("(max-width: 1024px)");
 
-    }=useSidebar((state)=>state);
+  useEffect(() => {
+    if (matches) {
+      onCollapse();
+    } else {
+      onExpand();
+    }
+  }, [matches, onCollapse, onExpand]);
 
-    useEffect(()=>{
-        if(matches){
-            onCollapse();
-        }else{
-            onExpand();
-        }
-    },[matches,onCollapse,onExpand]);
-
-    return(
-        <div className={cn("flex-1",collapsed?"ml-[70px]":"ml-[70px] lg:ml-60")}>
-            {children}
-        </div>
-    );
-};
+  return (
+    <div
+      className={cn("flex-1", collapsed ? "ml-[70px]" : "ml-[70px] lg:ml-60")}
+    >
+      {children}
+    </div>
+  );
+}
